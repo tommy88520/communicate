@@ -1,9 +1,15 @@
 package main
 
 import (
+	"ginchat/docs"
 	"ginchat/middlewares"
+	routers "ginchat/router"
+	"ginchat/utils"
 
 	"github.com/gin-gonic/gin"
+	swaggerfiles "github.com/swaggo/files"
+
+	ginSwagger "github.com/swaggo/gin-swagger"
 )
 
 // func main() {
@@ -11,7 +17,7 @@ import (
 // 	utils.InitConfig()
 // 	utils.InitMySQL()
 // 	utils.InitRedis()
-// 	r.Run(":3000") // listen and serve on 0.0.0.0:8080 (for windows "localhost:8080")
+// 	r.Run(":8080") // listen and serve on 0.0.0.0:8080 (for windows "localhost:8080")
 // }
 
 // func testHandler(w http.ResponseWriter, r *http.Request) {
@@ -37,11 +43,13 @@ import (
 
 func main() {
 	r := gin.Default()
-	// corsConfig := cors.DefaultConfig()
 	r.Use(middlewares.Cors())
-	r.POST("/jsonp", func(c *gin.Context) {
-		c.String(200, "test22222")
-	})
+	routers.ApiRouters(r)
+	utils.InitConfig()
+	utils.InitMySQL()
+	utils.InitRedis()
+	docs.SwaggerInfo.BasePath = "/"
+	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))
 	r.Run(":8080")
 
 }

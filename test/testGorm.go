@@ -1,9 +1,7 @@
 package main
 
 import (
-	"fmt"
 	"ginchat/models"
-	"time"
 
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
@@ -22,25 +20,28 @@ func main() {
 	}
 
 	// 迁移 schema
-	db.AutoMigrate(&models.UserBasic{})
-	user := &models.UserBasic{}
-	user.Name = "註冊"
-	defaultTime := time.Now()
-	user.LoginTime = defaultTime
-	user.HeartbeatTime = defaultTime
-	user.LoginOutTime = defaultTime
+	db.AutoMigrate(&models.Message{})
+	db.AutoMigrate(&models.GroupBasic{})
+	db.AutoMigrate(&models.Contact{})
+
+	// user := &models.Message{}
+	// user.Name = "註冊"
+	// defaultTime := time.Now()
+	// user.LoginTime = defaultTime
+	// user.HeartbeatTime = defaultTime
+	// user.LoginOutTime = defaultTime
 
 	// Create
-	db.Create(user)
+	// db.Create(user)
 
 	// Read
 	// var product Product
-	fmt.Println(db.First(user, 1))
+	// fmt.Println(db.First(user, 1))
 	// db.First(user, 1)                 // 根据整型主键查找
 	// db.First(user, "code = ?", "D42") // 查找 code 字段值为 D42 的记录
 
 	// Update - 将 product 的 price 更新为 200
-	db.Model(user).Update("Password", "123")
+	// db.Model(user).Update("Password", "123")
 	// Update - 更新多个字段
 	// db.Model(&product).Updates(Product{Price: 200, Code: "F42"}) // 仅更新非零值字段
 	// db.Model(&product).Updates(map[string]interface{}{"Price": 200, "Code": "F42"})

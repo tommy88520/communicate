@@ -10,6 +10,90 @@ paths:
             type: string
       tags:
       - Index
+  /user/createUser:
+    post:
+      parameters:
+      - description: name
+        in: query
+        name: name
+        required: true
+        type: string
+      - description: password
+        in: query
+        name: password
+        required: true
+        type: string
+      - description: repassword
+        in: query
+        name: repassword
+        required: true
+        type: string
+      - description: phone
+        in: query
+        name: phone
+        required: true
+        type: string
+      - description: email
+        in: query
+        name: email
+        required: true
+        type: string
+      - description: age
+        in: query
+        name: age
+        required: true
+        type: string
+      - description: sex
+        enum:
+        - male
+        - female
+        - none
+        in: query
+        name: sex
+        required: true
+        type: string
+      responses:
+        "200":
+          description: code","message"}
+          schema:
+            type: string
+      tags:
+      - CreateUSer
+  /user/deleteUser:
+    post:
+      parameters:
+      - description: id
+        in: query
+        name: id
+        required: true
+        type: string
+      responses:
+        "200":
+          description: code","message"}
+          schema:
+            type: string
+      tags:
+      - DeleteUser
+  /user/find-user-by-name-pwd:
+    post:
+      parameters:
+      - description: name
+        in: query
+        name: name
+        required: true
+        type: string
+      - description: password
+        in: query
+        name: password
+        required: true
+        type: string
+      responses:
+        "200":
+          description: code","message"}
+          schema:
+            type: string
+      tags:
+      - FindUserByNameAndPwd
   /user/getUserData:
     get:
       responses:
@@ -19,4 +103,39 @@ paths:
             type: string
       tags:
       - GetUserData
+  /user/updateUser:
+    patch:
+      parameters:
+      - description: id
+        in: formData
+        name: id
+        required: true
+        type: string
+      - description: name
+        in: formData
+        name: name
+        required: true
+        type: string
+      - description: password
+        in: formData
+        name: password
+        required: true
+        type: string
+      - description: phone
+        in: formData
+        name: phone
+        required: true
+        type: string
+      - description: email
+        in: formData
+        name: email
+        required: true
+        type: string
+      responses:
+        "200":
+          description: code","message"}
+          schema:
+            type: string
+      tags:
+      - UpdateUser
 swagger: "2.0"

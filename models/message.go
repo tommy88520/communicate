@@ -116,10 +116,11 @@ func init() {
 func udpSendProc() {
 	con, err := net.DialUDP("udp", nil, &net.UDPAddr{
 		// IP:   net.IPv4(192, 168, 0, 58),
-		IP: net.IPv4(192, 168, 68, 110),
+		// IP: net.IPv4(192, 168, 68, 110),
+		IP: net.IPv4(192, 168, 1, 143),
 
 		//192.168.68.110
-		Port: 3000,
+		Port: 3333,
 	})
 
 	defer con.Close()
@@ -140,8 +141,9 @@ func udpSendProc() {
 
 func updRecvProc() {
 	con, err := net.ListenUDP("udp", &net.UDPAddr{
-		IP:   net.IPv4(192, 168, 68, 110),
-		Port: 3000,
+		IP: net.IPv4(192, 168, 1, 143),
+
+		Port: 3333,
 	})
 	if err != nil {
 		fmt.Println(err)

@@ -16,7 +16,7 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/index": {
+        "/user": {
             "get": {
                 "tags": [
                     "Index"
@@ -41,42 +41,42 @@ const docTemplate = `{
                         "type": "string",
                         "description": "name",
                         "name": "name",
-                        "in": "query",
+                        "in": "formData",
                         "required": true
                     },
                     {
                         "type": "string",
                         "description": "password",
                         "name": "password",
-                        "in": "query",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "description": "repassword",
-                        "name": "repassword",
-                        "in": "query",
+                        "in": "formData",
                         "required": true
                     },
                     {
                         "type": "string",
                         "description": "phone",
                         "name": "phone",
-                        "in": "query",
+                        "in": "formData",
                         "required": true
                     },
                     {
                         "type": "string",
                         "description": "email",
                         "name": "email",
-                        "in": "query",
+                        "in": "formData",
                         "required": true
                     },
                     {
                         "type": "string",
                         "description": "age",
                         "name": "age",
-                        "in": "query",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "test",
+                        "name": "test",
+                        "in": "formData",
                         "required": true
                     },
                     {
@@ -88,7 +88,7 @@ const docTemplate = `{
                         "type": "string",
                         "description": "sex",
                         "name": "sex",
-                        "in": "query",
+                        "in": "formData",
                         "required": true
                     }
                 ],
@@ -112,7 +112,7 @@ const docTemplate = `{
                         "type": "string",
                         "description": "id",
                         "name": "id",
-                        "in": "query",
+                        "in": "formData",
                         "required": true
                     }
                 ],
@@ -133,18 +133,13 @@ const docTemplate = `{
                 ],
                 "parameters": [
                     {
-                        "type": "string",
-                        "description": "name",
-                        "name": "name",
-                        "in": "query",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "description": "password",
-                        "name": "password",
-                        "in": "query",
-                        "required": true
+                        "description": "FindUserByNameDto object",
+                        "name": "requestBody",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/service.FindUserByNameDto"
+                        }
                     }
                 ],
                 "responses": {
@@ -161,6 +156,30 @@ const docTemplate = `{
             "get": {
                 "tags": [
                     "GetUserData"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "code\",\"message\"}",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/user/search-friend": {
+            "get": {
+                "tags": [
+                    "SearchFriend"
+                ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "id",
+                        "name": "id",
+                        "in": "query",
+                        "required": true
+                    }
                 ],
                 "responses": {
                     "200": {
@@ -221,6 +240,19 @@ const docTemplate = `{
                             "type": "string"
                         }
                     }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "service.FindUserByNameDto": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
                 }
             }
         }

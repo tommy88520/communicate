@@ -3,11 +3,14 @@ package models
 import (
 	"encoding/json"
 	"fmt"
+
+	// "ginchat/models"
 	"net"
 	"net/http"
 	"strconv"
 	"sync"
 
+	// "github.com/gin-gonic/gin"
 	"github.com/gorilla/websocket"
 	"gopkg.in/fatih/set.v0"
 	"gorm.io/gorm"
@@ -116,8 +119,9 @@ func init() {
 func udpSendProc() {
 	con, err := net.DialUDP("udp", nil, &net.UDPAddr{
 		// IP:   net.IPv4(192, 168, 0, 58),
-		// IP: net.IPv4(192, 168, 68, 110),
-		IP: net.IPv4(192, 168, 1, 143),
+		IP: net.IPv4(192, 168, 68, 106),
+		// IP: net.IPv4(192, 168, 1, 143),
+		// IP: net.IPv4(192, 168, 0, 208),
 
 		//192.168.68.110
 		Port: 3333,
@@ -141,7 +145,7 @@ func udpSendProc() {
 
 func updRecvProc() {
 	con, err := net.ListenUDP("udp", &net.UDPAddr{
-		IP: net.IPv4(192, 168, 1, 143),
+		IP: net.IPv4(192, 168, 68, 106),
 
 		Port: 3333,
 	})
@@ -176,6 +180,7 @@ func dispatch(buf []byte) {
 	switch msg.Type {
 	case 1: //私信
 		sendMsg(msg.TargetID, buf)
+		fmt.Println("dsadss", msg.TargetID)
 		// case 2: // 群發
 		// 	sendGroupMsg()
 		// case 3: //廣播

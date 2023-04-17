@@ -1,6 +1,7 @@
 package service
 
 import (
+	"encoding/json"
 	"fmt"
 	"ginchat/models"
 	"ginchat/utils"
@@ -13,6 +14,11 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/gorilla/websocket"
 )
+
+type FindUserByNameDto struct {
+	Name     string `json:"name"`
+	Password string `json:"password"`
+}
 
 // GetUserList
 // @Tags GetUserData
@@ -33,45 +39,45 @@ func FindUserByName(name string) {}
 
 // CreateUser
 // @Tags CreateUSer
-// @param name query string true "name"
-// @param password query string true "password"
-// @param repassword query string true "repassword"
-// @param phone query string true "phone"
-// @param email query string true "email"
-// @param age query string true "age"
-// @param sex query string true "sex"  Enums(male, female, none)
+// @param name formData string true "name" default:"tommy222"
+// @param password formData string true "password"
+// @param phone formData string true "phone"
+// @param email formData string true "email"
+// @param age formData string true "age"
+// @param test formData string true "test"
+// @param sex formData string true "sex"  Enums(male, female, none)
 // @Success 200 {string} json{"code","message"}
 // @Router /user/createUser [post]
 func CreateUser(c *gin.Context) {
 	user := models.UserBasic{}
-	user.Name = c.Query("name")
-	password := c.Query("password")
-	repassword := c.Query("repassword")
-	user.Phone = c.Query("phone")
-	user.Email = c.Query("email")
-	userAge, _ := strconv.Atoi(c.Query("age"))
+	user.Name = c.PostForm("name")
+	password := c.PostForm("password")
+	user.Phone = c.PostForm("phone")
+	user.Email = c.PostForm("email")
+	userAge, _ := strconv.Atoi(c.PostForm("age"))
 	user.Age = userAge
-	user.Sex = c.Query("sex")
+	user.Sex = c.PostForm("sex")
 	defaultTime := time.Now()
 	user.LoginTime = defaultTime
 	user.HeartbeatTime = defaultTime
 	user.LoginOutTime = defaultTime
 	salt := fmt.Sprintf("%06d", rand.Int31())
 	user.Salt = salt
+	fmt.Println("user", user)
+	// return
 	data := models.FindUserName(user.Name)
+	if user.Name == "" || password == "" {
+		c.JSON(200, gin.H{
+			"code":    -1,
+			"message": "註冊訊息不完整",
+		})
+		return
+	}
 
 	if data.Name != "" {
 		c.JSON(200, gin.H{
 			"code":    -1,
 			"message": "用戶已註冊",
-		})
-		return
-	}
-	if password != repassword {
-
-		c.JSON(200, gin.H{
-			"code":    -1,
-			"message": "密碼不一致",
 		})
 		return
 	}
@@ -97,12 +103,12 @@ func CreateUser(c *gin.Context) {
 
 // DeleteUser
 // @Tags DeleteUser
-// @param id query string true "id"
+// @param id formData string true "id"
 // @Success 200 {string} json{"code","message"}
 // @Router /user/deleteUser [post]
 func DeleteUser(c *gin.Context) {
 	user := models.UserBasic{}
-	id, _ := strconv.Atoi(c.Query("id"))
+	id, _ := strconv.Atoi(c.PostForm("id"))
 	user.ID = uint(id)
 	models.DeleteUser(user)
 
@@ -154,17 +160,26 @@ func UpdateUser(c *gin.Context) {
 
 // FindUserByNameAndPwd
 // @Tags FindUserByNameAndPwd
-// @param name query string true "name"
-// @param password query string true "password"
+// @Param requestBody body FindUserByNameDto true "FindUserByNameDto object"
 // @Success 200 {string} json{"code","message"}
 // @Router /user/find-user-by-name-pwd [post]
 func FindUserByNameAndPwd(c *gin.Context) {
+	buf := make([]byte, 1024)
+	n, _ := c.Request.Body.Read(buf)
 
-	c.String(200, "ds")
-	return
+	var findUserByDto FindUserByNameDto
+	err := json.Unmarshal(buf[:n], &findUserByDto)
+	if err != nil {
+		fmt.Println("err")
+	}
+	fmt.Printf("Name: %s, Password: %s\n", findUserByDto.Name, findUserByDto.Password)
 	data := models.UserBasic{}
-	name := c.Query("name")
-	password := c.Query("password")
+	// name := c.Query("name")
+	name := findUserByDto.Name
+	// password := c.Query("password")
+	fmt.Println(name)
+
+	password := findUserByDto.Password
 	user := models.FindUserName(name)
 	if user.Name == "" {
 		c.JSON(200, gin.H{
@@ -190,6 +205,32 @@ func FindUserByNameAndPwd(c *gin.Context) {
 		"message": "登入成功",
 		"data":    data,
 	})
+}
+
+// SearchFriend
+// @Tags SearchFriend
+// @param id query string true "id"
+// @Success 200 {string} json{"code","message"}
+// @Router /user/search-friend [get]
+func SearchFriends(c *gin.Context) {
+	// c.String(200, "sdf")
+	// return
+	userIdStr := c.Query("id")
+	userId, err := strconv.ParseUint(userIdStr, 10, 64)
+	// fmt.Println(userId)
+	if err != nil {
+		fmt.Println("err", err)
+	}
+
+	friendData := models.SearchFriend(uint(userId))
+
+	// c.JSON(200, gin.H{
+	// 	"code":    0,
+	// 	"message": "獲取成功",
+	// 	"data":    friendData,
+	// })
+
+	utils.ResOkList(c.Writer, friendData, len(friendData))
 }
 
 var upGrade = websocket.Upgrader{

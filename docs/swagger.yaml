@@ -1,7 +1,15 @@
+definitions:
+  service.FindUserByNameDto:
+    properties:
+      name:
+        type: string
+      password:
+        type: string
+    type: object
 info:
   contact: {}
 paths:
-  /index:
+  /user:
     get:
       responses:
         "200":
@@ -14,33 +22,33 @@ paths:
     post:
       parameters:
       - description: name
-        in: query
+        in: formData
         name: name
         required: true
         type: string
       - description: password
-        in: query
+        in: formData
         name: password
         required: true
         type: string
-      - description: repassword
-        in: query
-        name: repassword
-        required: true
-        type: string
       - description: phone
-        in: query
+        in: formData
         name: phone
         required: true
         type: string
       - description: email
-        in: query
+        in: formData
         name: email
         required: true
         type: string
       - description: age
-        in: query
+        in: formData
         name: age
+        required: true
+        type: string
+      - description: test
+        in: formData
+        name: test
         required: true
         type: string
       - description: sex
@@ -48,7 +56,7 @@ paths:
         - male
         - female
         - none
-        in: query
+        in: formData
         name: sex
         required: true
         type: string
@@ -63,7 +71,7 @@ paths:
     post:
       parameters:
       - description: id
-        in: query
+        in: formData
         name: id
         required: true
         type: string
@@ -77,16 +85,12 @@ paths:
   /user/find-user-by-name-pwd:
     post:
       parameters:
-      - description: name
-        in: query
-        name: name
+      - description: FindUserByNameDto object
+        in: body
+        name: requestBody
         required: true
-        type: string
-      - description: password
-        in: query
-        name: password
-        required: true
-        type: string
+        schema:
+          $ref: '#/definitions/service.FindUserByNameDto'
       responses:
         "200":
           description: code","message"}
@@ -103,6 +107,21 @@ paths:
             type: string
       tags:
       - GetUserData
+  /user/search-friend:
+    get:
+      parameters:
+      - description: id
+        in: query
+        name: id
+        required: true
+        type: string
+      responses:
+        "200":
+          description: code","message"}
+          schema:
+            type: string
+      tags:
+      - SearchFriend
   /user/updateUser:
     patch:
       parameters:
